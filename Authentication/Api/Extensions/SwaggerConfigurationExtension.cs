@@ -13,8 +13,6 @@ namespace Api.Extensions
                     Title = "Authentication Service",
                     Version = "v1",
                 });
-
-
             });
         }
 

@@ -1,4 +1,3 @@
-using Api.Controllers;
 using Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
