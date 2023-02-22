@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using System.Threading.RateLimiting;
 
 namespace Api.Extensions
 {
@@ -27,7 +28,24 @@ namespace Api.Extensions
             services.AddVersionedApiExplorer(options =>
             {
                 options.GroupNameFormat = "'v'VW";
-                options.SubstituteApiVersionInUrl= true;
+                options.SubstituteApiVersionInUrl = true;
+            });
+
+            services.AddRateLimiter(options =>
+            {
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext => 
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+                        factory: partition => new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = 10,
+                            QueueLimit = 0,
+                            Window = TimeSpan.FromMinutes(1),
+                            
+                        }));
+
+                options.RejectionStatusCode = 429;
             });
 
             return services;
