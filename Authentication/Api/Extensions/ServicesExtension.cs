@@ -1,8 +1,8 @@
 ﻿using Database;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Threading.RateLimiting;
 
 namespace Api.Extensions
@@ -11,6 +11,9 @@ namespace Api.Extensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            string migrationAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
+
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -53,8 +56,20 @@ namespace Api.Extensions
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             });
+
+            services.AddIdentityServer()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext =
+                        context => context.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly));
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext =
+                        context => context.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly));
+                });
 
             return services;
         }
