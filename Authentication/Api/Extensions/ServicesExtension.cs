@@ -62,13 +62,13 @@ namespace Api.Extensions
             services.AddIdentityServer()
                 .AddConfigurationStore(options =>
                 {
-                    options.ConfigureDbContext =
-                        context => context.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly));
+                    options.ConfigureDbContext = context => context.UseSqlServer(connectionString, 
+                        sql => sql.MigrationsAssembly(migrationAssembly));
                 })
                 .AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext =
-                        context => context.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationAssembly));
+                    options.ConfigureDbContext = context => context.UseSqlServer(connectionString, 
+                        sql => sql.MigrationsAssembly(migrationAssembly));
                 });
 
             return services;
