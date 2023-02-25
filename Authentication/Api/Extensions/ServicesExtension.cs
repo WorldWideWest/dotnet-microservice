@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Database;
+using IdentityServer4.Test;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
 
 namespace Api.Extensions
 {
     public static class ServicesExtension
     {
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, WebApplicationBuilder builder)
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
@@ -46,6 +49,11 @@ namespace Api.Extensions
                         }));
 
                 options.RejectionStatusCode = 429;
+            });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             return services;

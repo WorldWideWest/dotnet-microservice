@@ -2,7 +2,7 @@ using Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddServices();
+builder.Services.AddServices(builder);
 
 var app = builder.Build();
 
