@@ -1,5 +1,4 @@
-﻿using Database;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -9,22 +8,24 @@ namespace Api.Controllers
     [ApiVersion("1.0")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly ILogger<AuthenticationController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
+
         public AuthenticationController(
-            ApplicationDbContext context,
+            UserManager<IdentityUser> userManager,
             ILogger<AuthenticationController> logger
             )
         {
-            _context = context;
+            _userManager = userManager;
             _logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<string[]> GetStrings()
+        public ActionResult GetStrings([FromBody]IdentityUser user)
         {
-            return Ok(new string[] { "something", "Mirza", "Dzeno" });
+            _logger.LogInformation(user.ToString());
+            return Ok();
         }
     }
 }

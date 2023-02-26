@@ -55,6 +55,10 @@ namespace Api.Extensions
                 options.RejectionStatusCode = 429;
             });
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
