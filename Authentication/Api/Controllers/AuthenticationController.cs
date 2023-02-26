@@ -35,6 +35,7 @@ namespace Api.Controllers
 
                 if (!result.IsSuccessful)
                     return BadRequest(result.Errors);
+
                 return Ok(result);
             }
             catch (Exception ex)

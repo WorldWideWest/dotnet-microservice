@@ -4,22 +4,18 @@
     {
         public BaseException()
         {
-            IsSuccessful = Errors.Count == 0;
         }
 
         public BaseException(List<Error> errors)
         {
             Errors = errors;
-            IsSuccessful = Errors.Count == 0;
         }
 
         public BaseException(Error error)
         {
             Errors.Add(error);
-            IsSuccessful = Errors.Count == 0;
         }
 
-        public bool IsSuccessful { get; set; }
         public List<Error> Errors { get; set; }
     }
 

@@ -8,7 +8,10 @@ namespace Api.AutoMapper.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserRegistrationRequestDTO, User>();
+            CreateMap<UserRegistrationRequestDTO, User>()
+                .ForMember(
+                    dest => dest.PasswordHash,
+                    options => options.MapFrom(src => src.Password));
         }
 
     }
