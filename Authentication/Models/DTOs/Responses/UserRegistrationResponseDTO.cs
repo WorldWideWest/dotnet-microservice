@@ -1,9 +1,8 @@
-﻿using Models.DTOs.Response;
+﻿using Models.DTOs.Responses;
 
 namespace Models.DTOs.Responses
 {
     public class UserRegistrationResponseDTO : BaseResponse
     {
-        public string Message { get; set; }
     }
 }

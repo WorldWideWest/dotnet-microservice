@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs.Requests;
 using Models.DTOs.Responses;
@@ -25,9 +26,9 @@ namespace Api.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(UserRegistrationResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserRegistrationResponseDTO>> Register([FromBody]UserRegistrationRequestDTO request)
+        [ProducesResponseType(typeof(Response), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserRegistrationResponseDTO>> RegisterAsync([FromBody] UserRegistrationRequestDTO request)
         {
             try
             {
@@ -36,7 +37,7 @@ namespace Api.Controllers
                 if (!result.Succeeded)
                     return BadRequest(result.Errors);
 
-                return Ok(result);
+                return Ok(result.Response);
             }
             catch (Exception ex)
             {

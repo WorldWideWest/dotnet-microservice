@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Models.Constants.Success;
 using Models.DTOs.Requests;
-using Models.DTOs.Response;
 using Models.DTOs.Responses;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
@@ -34,15 +35,19 @@ namespace Services
             try
             {
                 User user = _mapper.Map<UserRegistrationRequestDTO, User>(request);
-                
                 user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
                 var result = await _userManager.CreateAsync(user);
-
                 if (!result.Succeeded)
                     return new() { Errors = result.Errors.ToList() };
 
-                return new() { Message = "To Complete the Registration go to your Email" };
+                Response response = new()
+                {
+                    Message = Messages.CONFIRM_EMAIL,
+                    Code = StatusCodes.Status201Created.ToString()
+                };
+
+                return new() { Response = response };
             }
             catch (Exception ex)
             {

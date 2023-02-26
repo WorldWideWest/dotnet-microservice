@@ -1,5 +1,5 @@
 ﻿
-using Models.Errors.Constants;
+using Models.Constants.Error;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.DTOs.Requests

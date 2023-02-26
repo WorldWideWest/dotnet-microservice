@@ -1,4 +1,4 @@
-﻿namespace Models.Errors.Constants
+﻿namespace Models.Constants.Error
 {
     public static class Messages
     {

@@ -1,14 +1,22 @@
-﻿using Models.DTOs.Error;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace Models.DTOs.Response
+namespace Models.DTOs.Responses
 {
-    public class BaseResponse : BaseException
+    public class BaseResponse
     {
         public BaseResponse()
         {
-            Succeeded = Errors is not null ? false : true;
+            Succeeded = Errors is null;
         }
 
+        public List<IdentityError> Errors { get; set; }
+        public Response Response { get; set; }
         public bool Succeeded { get; set; }
+    }
+   
+    public class Response
+    {
+        public string Code { get; set; }
+        public string Message { get; set; }
     }
 }
