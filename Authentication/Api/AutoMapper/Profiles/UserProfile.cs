@@ -11,7 +11,10 @@ namespace Api.AutoMapper.Profiles
             CreateMap<UserRegistrationRequestDTO, User>()
                 .ForMember(
                     dest => dest.PasswordHash,
-                    options => options.MapFrom(src => src.Password));
+                    options => options.MapFrom(src => src.Password))
+                .ForMember(
+                    dest => dest.UserName,
+                    options => options.MapFrom(src => src.Email));
         }
 
     }

@@ -6,6 +6,6 @@ namespace Models.Interfaces.Services
 {
     public interface IAuthenticationService
     {
-        public Task<UserRegistrationResponseDTO> Register(UserRegistrationRequestDTO request);
+        public Task<UserRegistrationResponseDTO> RegisterAsync(UserRegistrationRequestDTO request);
     }
 }

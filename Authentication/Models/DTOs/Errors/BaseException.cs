@@ -1,4 +1,6 @@
-﻿namespace Models.DTOs.Error
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Models.DTOs.Error
 {
     public class BaseException
     {
@@ -6,22 +8,16 @@
         {
         }
 
-        public BaseException(List<Error> errors)
+        public BaseException(List<IdentityError> errors)
         {
             Errors = errors;
         }
 
-        public BaseException(Error error)
+        public BaseException(IdentityError error)
         {
             Errors.Add(error);
         }
 
-        public List<Error> Errors { get; set; }
-    }
-
-    public class Error
-    {
-        public string Code { get; set; }
-        public string Message { get; set; }
+        public List<IdentityError> Errors { get; set; }
     }
 }

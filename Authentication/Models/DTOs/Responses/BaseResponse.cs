@@ -6,9 +6,9 @@ namespace Models.DTOs.Response
     {
         public BaseResponse()
         {
-            IsSuccessful = Errors is not null ? false : true;
+            Succeeded = Errors is not null ? false : true;
         }
 
-        public bool IsSuccessful { get; set; }
+        public bool Succeeded { get; set; }
     }
 }

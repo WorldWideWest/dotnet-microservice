@@ -1,6 +1,8 @@
 ﻿using Database;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Models.Entities.Identity;
 using Models.Interfaces.Services;
 using Services;
 using System.Reflection;
@@ -33,6 +35,7 @@ namespace Api.Extensions
             IdentityExtension.AddIdentityServices(services, connectionString, migrationAssembly);
             AutoMapperExtension.AddAutoMapperServices(services);
 
+            services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;

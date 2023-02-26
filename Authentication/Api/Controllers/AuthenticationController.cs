@@ -31,9 +31,9 @@ namespace Api.Controllers
         {
             try
             {
-                var result = await _authenticationService.Register(request);
+                var result = await _authenticationService.RegisterAsync(request);
 
-                if (!result.IsSuccessful)
+                if (!result.Succeeded)
                     return BadRequest(result.Errors);
 
                 return Ok(result);
