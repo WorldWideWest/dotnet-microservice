@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\Error\" />
-    <Folder Include="DTO\Response\" />
+    <Folder Include="DTOs\Response\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Models.DTOs.Request;
 
 namespace Api.Controllers
 {
@@ -8,11 +9,18 @@ namespace Api.Controllers
     [ApiVersion("1.0")]
     public class AuthenticationController : ControllerBase
     {
-        [HttpGet]
+        [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult GetStrings([FromBody]IdentityUser user)
+        public ActionResult Register([FromBody]UserRegistrationDTO request)
         {
-            return Ok();
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
