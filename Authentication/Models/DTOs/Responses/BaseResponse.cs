@@ -6,10 +6,14 @@ namespace Models.DTOs.Responses
     {
         public BaseResponse()
         {
-            Succeeded = Errors is null;
+            Succeeded = Errors.Count == 0;
         }
 
-        public List<IdentityError> Errors { get; set; }
+        public BaseResponse(List<IdentityError> errors) => Errors.AddRange(errors);
+
+        public BaseResponse(IdentityError error) => Errors.Add(error);
+
+        public List<IdentityError> Errors { get; set; } =  new List<IdentityError>();
         public Response Response { get; set; }
         public bool Succeeded { get; set; }
     }
@@ -17,6 +21,6 @@ namespace Models.DTOs.Responses
     public class Response
     {
         public string Code { get; set; }
-        public string Message { get; set; }
+        public string Description { get; set; }
     }
 }

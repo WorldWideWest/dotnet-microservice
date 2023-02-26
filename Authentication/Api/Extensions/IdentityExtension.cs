@@ -9,9 +9,13 @@ namespace Api.Extensions
     {
         public static IServiceCollection AddIdentityServices(IServiceCollection services, string connectionString, string migrationAssembly) 
         {
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                 .AddConfigurationStore(options =>

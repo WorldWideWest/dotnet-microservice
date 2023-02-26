@@ -16,11 +16,13 @@ namespace Services
             _userManager = userManager;
         }
 
-        public Task SendConfirmationEmail(User user)
+
+        public async Task SendConfirmationEmail(User user)
         {
             try
             {
-
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                //var verificationUrl = Url.Action
             }
             catch (Exception ex)
             {
@@ -30,5 +32,20 @@ namespace Services
 
             throw new NotImplementedException();
         }
+
+        public async Task<User> FindUserByEmail(string email)
+        {
+            try
+            {
+                var result = await _userManager.FindByEmailAsync(email);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
     }
 }

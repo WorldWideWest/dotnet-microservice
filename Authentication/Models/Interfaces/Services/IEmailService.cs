@@ -10,5 +10,6 @@ namespace Models.Interfaces.Services
     public interface IEmailService
     {
         public Task SendConfirmationEmail(User user);
+        public Task<User> FindUserByEmail(string email);
     }
 }

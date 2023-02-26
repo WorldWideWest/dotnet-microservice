@@ -6,7 +6,6 @@ using Models.Entities.Identity;
 using Models.Interfaces.Services;
 using Services;
 using System.Reflection;
-using System.Threading.RateLimiting;
 
 namespace Api.Extensions
 {
