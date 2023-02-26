@@ -2,9 +2,9 @@
 using Models.Errors.Constants;
 using System.ComponentModel.DataAnnotations;
 
-namespace Models.DTOs.Request
+namespace Models.DTOs.Requests
 {
-    public class UserRegistrationDTO
+    public class UserRegistrationRequestDTO
     {
         [Required(ErrorMessage = Messages.PROPERTY_REQUIRED)]
         public string FirstName { get; set; }

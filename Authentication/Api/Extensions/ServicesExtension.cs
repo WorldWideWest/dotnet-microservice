@@ -1,9 +1,8 @@
 ﻿using Database;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Models.Entities.Identity;
+using Models.Interfaces.Services;
+using Services;
 using System.Reflection;
 using System.Threading.RateLimiting;
 
@@ -22,21 +21,6 @@ namespace Api.Extensions
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.DisableImplicitFromServicesParameters = true;
-            });
-
-            services.AddApiVersioning(options =>
-            {
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
-                options.ReportApiVersions = true;
-                options.ApiVersionReader = ApiVersionReader.Combine(
-                    new QueryStringApiVersionReader("version"));
-            });
-
-            services.AddVersionedApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'VW";
-                options.SubstituteApiVersionInUrl = true;
             });
 
             services.AddRateLimiter(options =>
@@ -61,21 +45,10 @@ namespace Api.Extensions
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            IdentityExtension.AddIdentityServices(services, connectionString, migrationAssembly);
+            AutoMapperExtension.AddAutoMapperServices(services);
 
-            services.AddIdentityServer()
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = context => context.UseSqlServer(connectionString, 
-                        sql => sql.MigrationsAssembly(migrationAssembly));
-                })
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = context => context.UseSqlServer(connectionString, 
-                        sql => sql.MigrationsAssembly(migrationAssembly));
-                });
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }
