@@ -23,28 +23,13 @@ namespace Api.Extensions
                 options.DisableImplicitFromServicesParameters = true;
             });
 
-            services.AddRateLimiter(options =>
-            {
-                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext => 
-                    RateLimitPartition.GetFixedWindowLimiter(
-                        partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-                        factory: partition => new FixedWindowRateLimiterOptions
-                        {
-                            AutoReplenishment = true,
-                            PermitLimit = 10,
-                            QueueLimit = 0,
-                            Window = TimeSpan.FromMinutes(1),
-                            
-                        }));
-
-                options.RejectionStatusCode = 429;
-            });
-
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });
 
+            ApiVersioningExtension.AddApiVersioningServices(services);
+            RateLimitterExtension.AddRateLimiterServices(services);
             IdentityExtension.AddIdentityServices(services, connectionString, migrationAssembly);
             AutoMapperExtension.AddAutoMapperServices(services);
 

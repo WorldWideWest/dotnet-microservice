@@ -30,7 +30,6 @@ namespace Services
         {
             try
             {
-
                 User user = _mapper.Map<UserRegistrationRequestDTO, User>(request);
 
                 await _userManager.CreateAsync(user);
