@@ -37,6 +37,7 @@ namespace Api.Extensions
 
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }
