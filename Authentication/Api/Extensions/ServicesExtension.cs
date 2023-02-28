@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 using Services;
 using System.Reflection;
 
@@ -42,7 +44,7 @@ namespace Api.Extensions
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
             
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuthenticationUtilityService, AuthenticationUtilityService>();
             services.AddScoped<IUrlHelper>(options =>
             {
                 var actionContext = options.GetService<IActionContextAccessor>()
@@ -53,7 +55,11 @@ namespace Api.Extensions
                 return factory.GetUrlHelper(actionContext);
             });
 
-
+            services.AddMailKit(config =>
+            {
+                var options = builder.Configuration.GetSection("MailSettings").Get<MailKitOptions>();
+                config.UseMailKit(options);
+            });
 
             return services;
         }

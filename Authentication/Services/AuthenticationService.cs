@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
+using Models.Constants.Email;
 using Models.Constants.Error;
 using Models.Constants.Success;
+using Models.DTOs.General;
 using Models.DTOs.Requests;
 using Models.DTOs.Responses;
 using Models.Entities.Identity;
@@ -17,28 +21,34 @@ namespace Services
         private readonly ILogger<AuthenticationService> _logger;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
-        private readonly IEmailService _emailService;
+        private readonly HttpRequest _request;
+        private readonly IAuthenticationUtilityService _authenticationUtilityService;
+        private readonly IUrlHelper _urlHelper;
 
         public AuthenticationService(
             UserManager<User> userManager,
             ILogger<AuthenticationService> logger,
             IMapper mapper,
             IPasswordHasher<User> passwordHasher,
-            IEmailService emailService
+            IHttpContextAccessor httpContextAccessor,
+            IAuthenticationUtilityService authenticationUtilityService,
+            IUrlHelper urlHelper
             )
         {
             _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
-            _emailService = emailService;
+            _request = httpContextAccessor.HttpContext.Request;
+            _authenticationUtilityService = authenticationUtilityService;
+            _urlHelper = urlHelper;
         }
 
         public async Task<UserRegistrationResponseDTO> RegisterAsync(UserRegistrationRequestDTO request)
         {
             try
             {
-                var user = await _emailService.FindUserByEmailAsync(request.Email);
+                var user = await _userManager.FindByEmailAsync(request.Email);
                 if (user != null)
                 {
                     IdentityError userExistsError = new()
@@ -57,7 +67,27 @@ namespace Services
                 if (!result.Succeeded)
                     return new() { Errors = result.Errors.ToList() };
 
-                await _emailService.SendConfirmationEmail(newUser.Email);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+
+                UrlActionContext urlActionContext = new()
+                {
+                    Action = "confirm",
+                    Controller = "Authentication",
+                    Host = _request.Host.ToString(),
+                    Values = new { email = newUser.Email, token }
+                };
+
+                var callbackUrl = _urlHelper.Action(urlActionContext);
+                
+                ActionEmailContext actionEmailContext = new()
+                {
+                    MailTo = newUser.Email,
+                    Subject = Subjects.EMAIL_VERIFICATION,
+                    Message = EmailMessages.Verification(newUser.Email),
+                    IsHtml = true
+                };
+
+                _authenticationUtilityService.SendActionEmail(actionEmailContext);
 
                 Response response = new()
                 {
