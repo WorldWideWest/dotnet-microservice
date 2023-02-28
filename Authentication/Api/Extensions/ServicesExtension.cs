@@ -1,6 +1,8 @@
 ﻿using Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
@@ -19,6 +21,8 @@ namespace Api.Extensions
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.DisableImplicitFromServicesParameters = true;
@@ -34,9 +38,22 @@ namespace Api.Extensions
             IdentityExtension.AddIdentityServices(services, connectionString, migrationAssembly);
             AutoMapperExtension.AddAutoMapperServices(services);
 
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+            
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUrlHelper>(options =>
+            {
+                var actionContext = options.GetService<IActionContextAccessor>()
+                    .ActionContext;
+
+                var factory = options.GetRequiredService<IUrlHelperFactory>();
+
+                return factory.GetUrlHelper(actionContext);
+            });
+
+
 
             return services;
         }

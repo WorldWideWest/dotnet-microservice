@@ -1,5 +1,4 @@
 ﻿using Models.Constants.Error;
-using Models.Constants.Regex;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.DTOs.Requests

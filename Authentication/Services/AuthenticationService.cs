@@ -38,7 +38,7 @@ namespace Services
         {
             try
             {
-                var user = await _emailService.FindUserByEmail(request.Email);
+                var user = await _emailService.FindUserByEmailAsync(request.Email);
                 if (user != null)
                 {
                     IdentityError userExistsError = new()
@@ -53,9 +53,11 @@ namespace Services
                 User newUser = _mapper.Map<UserRegistrationRequestDTO, User>(request);
                 newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
                 
-                var result = await _userManager.CreateAsync(newUser);
+                var result = await _userManager.CreateAsync(newUser).ConfigureAwait(false);
                 if (!result.Succeeded)
                     return new() { Errors = result.Errors.ToList() };
+
+                await _emailService.SendConfirmationEmail(newUser.Email);
 
                 Response response = new()
                 {

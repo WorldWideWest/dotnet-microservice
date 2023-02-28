@@ -32,6 +32,27 @@ namespace Api.Controllers
         {
             try
             {
+                var result = await _authenticationService.RegisterAsync(request)
+                    .ConfigureAwait(false);
+
+                if (!result.Succeeded)
+                    return BadRequest(result.Errors);
+
+                return Ok(result.Response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
+        [HttpPost("confirm")]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserRegistrationResponseDTO>> ConfirmAsync([FromBody] UserRegistrationRequestDTO request)
+        {
+            try
+            {
                 var result = await _authenticationService.RegisterAsync(request);
 
                 if (!result.Succeeded)
