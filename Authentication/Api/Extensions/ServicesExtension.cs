@@ -44,7 +44,6 @@ namespace Api.Extensions
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
             
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IAuthenticationUtilityService, AuthenticationUtilityService>();
             services.AddScoped<IUrlHelper>(options =>
             {
                 var actionContext = options.GetService<IActionContextAccessor>()

@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 using Models.Constants.Email;
 using Models.Constants.Error;
 using Models.Constants.Success;
-using Models.DTOs.General;
 using Models.DTOs.Requests;
 using Models.DTOs.Responses;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
+using NETCore.MailKit.Core;
 
 namespace Services
 {
@@ -22,8 +22,8 @@ namespace Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly HttpRequest _request;
-        private readonly IAuthenticationUtilityService _authenticationUtilityService;
         private readonly IUrlHelper _urlHelper;
+        private readonly IEmailService _emailService;
 
         public AuthenticationService(
             UserManager<User> userManager,
@@ -31,8 +31,8 @@ namespace Services
             IMapper mapper,
             IPasswordHasher<User> passwordHasher,
             IHttpContextAccessor httpContextAccessor,
-            IAuthenticationUtilityService authenticationUtilityService,
-            IUrlHelper urlHelper
+            IUrlHelper urlHelper,
+            IEmailService emailService
             )
         {
             _userManager = userManager;
@@ -40,8 +40,8 @@ namespace Services
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _request = httpContextAccessor.HttpContext.Request;
-            _authenticationUtilityService = authenticationUtilityService;
             _urlHelper = urlHelper;
+            _emailService = emailService;
         }
 
         public async Task<UserRegistrationResponseDTO> RegisterAsync(UserRegistrationRequestDTO request)
@@ -79,15 +79,11 @@ namespace Services
 
                 var callbackUrl = _urlHelper.Action(urlActionContext);
                 
-                ActionEmailContext actionEmailContext = new()
-                {
-                    MailTo = newUser.Email,
-                    Subject = Subjects.EMAIL_VERIFICATION,
-                    Message = EmailMessages.Verification(newUser.Email),
-                    IsHtml = true
-                };
-
-                _authenticationUtilityService.SendActionEmail(actionEmailContext);
+                await _emailService.SendAsync(
+                    newUser.Email, 
+                    Subjects.EMAIL_VERIFICATION, 
+                    EmailMessages.Verification(callbackUrl),
+                    true);
 
                 Response response = new()
                 {
