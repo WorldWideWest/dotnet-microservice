@@ -1,4 +1,5 @@
-﻿using Database;
+﻿using Api.Extensions.Identity;
+using Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -19,13 +20,11 @@ namespace Api.Extensions
         {
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             string migrationAssembly = typeof(ApplicationDbContext).GetTypeInfo().Assembly.GetName().Name;
-
+            
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-
             services.AddLogging();
-
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

@@ -2,6 +2,7 @@ using Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddServices(builder);
 
 LoggerExtension.Configuration(builder.Logging, builder);
@@ -12,6 +13,8 @@ if(builder.Environment.IsDevelopment())
     app.UseSwaggerConfiguration();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
