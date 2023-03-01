@@ -99,5 +99,31 @@ namespace Services
                 throw ;
             }
         }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(EmailVerificationRequestDTO request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if(user is null)
+                {
+                    IdentityError error = new() { 
+                        Code = StatusCodes.Status404NotFound.ToString(),
+                        Description = ErrorMessages.USER_NOT_FOUND
+                    };
+
+                    return IdentityResult.Failed(error);
+                }
+
+                var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }

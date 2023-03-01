@@ -49,16 +49,16 @@ namespace Api.Controllers
         [HttpPost("confirm")]
         [ProducesResponseType(typeof(Response), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserRegistrationResponseDTO>> ConfirmAsync([FromBody] UserRegistrationRequestDTO request)
+        public async Task<ActionResult<IActionResult>> ConfirmEmailAsync([FromBody] EmailVerificationRequestDTO request)
         {
             try
             {
-                var result = await _authenticationService.RegisterAsync(request);
+                var result = await _authenticationService.ConfirmEmailAsync(request);
 
                 if (!result.Succeeded)
                     return BadRequest(result.Errors);
 
-                return Ok(result.Response);
+                return Ok();
             }
             catch (Exception ex)
             {
