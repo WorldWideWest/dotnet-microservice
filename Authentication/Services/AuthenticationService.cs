@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Models.Constants.Email;
 using Models.Constants.Error;
 using Models.DTOs.Requests;
-using Models.DTOs.Responses;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
 using NETCore.MailKit.Core;

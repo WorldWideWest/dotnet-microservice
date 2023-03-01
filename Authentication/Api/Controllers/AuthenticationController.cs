@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs.Requests;
-using Models.DTOs.Responses;
-using Models.Entities.Identity;
 using Models.Interfaces.Services;
 
 namespace Api.Controllers
@@ -28,7 +26,7 @@ namespace Api.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserRegistrationResponseDTO>> RegisterAsync([FromBody] UserRegistrationRequestDTO request)
+        public async Task<ActionResult<IdentityResult>> RegisterAsync([FromBody] UserRegistrationRequestDTO request)
         {
             try
             {

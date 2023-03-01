@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Models.DTOs.Requests;
-using Models.DTOs.Responses;
 
 namespace Models.Interfaces.Services
 {
