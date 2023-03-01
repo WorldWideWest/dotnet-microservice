@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Models.Constants.Email;
 using Models.Constants.Error;
-using Models.Constants.Success;
 using Models.DTOs.Requests;
 using Models.DTOs.Responses;
 using Models.Entities.Identity;
@@ -71,7 +69,7 @@ namespace Services
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                string callbackUrl = $"https://{_request.Host}/api/Authentication/verify?email={user.Email}&token={token}";
+                string callbackUrl = $"{_request.Scheme}://{_request.Host}/api/Authentication/verify?version=1.0/email={user.Email}&token={token}";
                 
                 await _emailService.SendAsync(
                     newUser.Email, 

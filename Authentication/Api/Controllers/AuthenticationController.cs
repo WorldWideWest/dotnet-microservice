@@ -49,7 +49,7 @@ namespace Api.Controllers
         [HttpPost("verify")]
         [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IActionResult>> VerifyEmailAsync([FromBody] EmailVerificationRequestDTO request)
+        public async Task<ActionResult<IdentityResult>> VerifyEmailAsync([FromBody] EmailVerificationRequestDTO request)
         {
             try
             {
