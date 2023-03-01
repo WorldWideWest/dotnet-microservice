@@ -6,7 +6,7 @@ namespace Models.Interfaces.Services
 {
     public interface IAuthenticationService
     {
-        public Task<UserRegistrationResponseDTO> RegisterAsync(UserRegistrationRequestDTO request);
-        public Task<IdentityResult> ConfirmEmailAsync(EmailVerificationRequestDTO request);
+        public Task<IdentityResult> RegisterAsync(UserRegistrationRequestDTO request);
+        public Task<IdentityResult> VerifyEmailAsync(EmailVerificationRequestDTO request);
     }
 }

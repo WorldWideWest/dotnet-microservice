@@ -26,7 +26,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserRegistrationResponseDTO>> RegisterAsync([FromBody] UserRegistrationRequestDTO request)
         {
@@ -38,7 +38,7 @@ namespace Api.Controllers
                 if (!result.Succeeded)
                     return BadRequest(result.Errors);
 
-                return Ok(result.Response);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -46,14 +46,14 @@ namespace Api.Controllers
             }
         }
         
-        [HttpPost("confirm")]
-        [ProducesResponseType(typeof(Response), StatusCodes.Status201Created)]
+        [HttpPost("verify")]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IActionResult>> ConfirmEmailAsync([FromBody] EmailVerificationRequestDTO request)
+        public async Task<ActionResult<IActionResult>> VerifyEmailAsync([FromBody] EmailVerificationRequestDTO request)
         {
             try
             {
-                var result = await _authenticationService.ConfirmEmailAsync(request);
+                var result = await _authenticationService.VerifyEmailAsync(request);
 
                 if (!result.Succeeded)
                     return BadRequest(result.Errors);

@@ -44,20 +44,20 @@ namespace Services
             _emailService = emailService;
         }
 
-        public async Task<UserRegistrationResponseDTO> RegisterAsync(UserRegistrationRequestDTO request)
+        public async Task<IdentityResult> RegisterAsync(UserRegistrationRequestDTO request)
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user != null)
+                var userExists = await _userManager.FindByEmailAsync(request.Email);
+                if (userExists is not null)
                 {
-                    IdentityError userExistsError = new()
+                    IdentityError error = new()
                     {
                         Code = StatusCodes.Status409Conflict.ToString(),
                         Description = ErrorMessages.USER_ALREADY_EXISTS
                     };
 
-                    return new(userExistsError);
+                    return IdentityResult.Failed(error);
                 }
 
                 User newUser = _mapper.Map<UserRegistrationRequestDTO, User>(request);
@@ -65,19 +65,13 @@ namespace Services
                 
                 var result = await _userManager.CreateAsync(newUser).ConfigureAwait(false);
                 if (!result.Succeeded)
-                    return new() { Errors = result.Errors.ToList() };
+                    return result;
+                
+                User user = await _userManager.FindByEmailAsync(request.Email);
 
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                UrlActionContext urlActionContext = new()
-                {
-                    Action = "confirm",
-                    Controller = "Authentication",
-                    Host = _request.Host.ToString(),
-                    Values = new { email = newUser.Email, token }
-                };
-
-                var callbackUrl = _urlHelper.Action(urlActionContext);
+                string callbackUrl = $"https://{_request.Host}/api/Authentication/verify?email={user.Email}&token={token}";
                 
                 await _emailService.SendAsync(
                     newUser.Email, 
@@ -85,13 +79,7 @@ namespace Services
                     EmailMessages.Verification(callbackUrl),
                     true);
 
-                Response response = new()
-                {
-                    Description = SuccessMessages.CONFIRM_EMAIL,
-                    Code = StatusCodes.Status201Created.ToString()
-                };
-
-                return new() { Response = response };
+                return IdentityResult.Success;
             }
             catch (Exception ex)
             {
@@ -100,7 +88,7 @@ namespace Services
             }
         }
 
-        public async Task<IdentityResult> ConfirmEmailAsync(EmailVerificationRequestDTO request)
+        public async Task<IdentityResult> VerifyEmailAsync(EmailVerificationRequestDTO request)
         {
             try
             {
