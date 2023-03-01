@@ -24,6 +24,8 @@ namespace Api.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
+            services.AddLogging();
+
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

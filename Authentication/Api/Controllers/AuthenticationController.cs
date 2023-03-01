@@ -42,6 +42,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message, nameof(RegisterAsync));
                 throw ex;
             }
         }
@@ -53,7 +54,8 @@ namespace Api.Controllers
         {
             try
             {
-                var result = await _authenticationService.VerifyEmailAsync(request);
+                var result = await _authenticationService.VerifyEmailAsync(request)
+                    .ConfigureAwait(false);
 
                 if (!result.Succeeded)
                     return BadRequest(result.Errors);
@@ -62,6 +64,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
                 throw ex;
             }
         }
