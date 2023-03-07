@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
 using Services;
 using System.Reflection;
 
@@ -26,10 +24,10 @@ namespace Api.Extensions
             services.AddSwaggerGen();
             services.AddLogging();
 
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.DisableImplicitFromServicesParameters = true;
-            });
+            //services.Configure<ApiBehaviorOptions>(options =>
+            //{
+            //    options.DisableImplicitFromServicesParameters = true;
+            //});
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -55,11 +53,11 @@ namespace Api.Extensions
                 return factory.GetUrlHelper(actionContext);
             });
 
-            services.AddMailKit(config =>
-            {
-                var options = builder.Configuration.GetSection("MailSettings").Get<MailKitOptions>();
-                config.UseMailKit(options);
-            });
+            //services.AddMailKit(config =>
+            //{
+            //    var options = builder.Configuration.GetSection("MailSettings").Get<MailKitOptions>();
+            //    config.UseMailKit(options);
+            //});
 
             return services;
         }
