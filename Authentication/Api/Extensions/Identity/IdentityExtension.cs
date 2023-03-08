@@ -1,6 +1,8 @@
 ﻿using Api.Providers;
 using Database;
+using Database.Seed.IdentityServer.Data;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,8 @@ namespace Api.Extensions.Identity
     {
         public static IServiceCollection AddIdentityServices(IServiceCollection services, string connectionString, string migrationAssembly)
         {
+            var configurationMigrationAssembly = typeof(ConfigurationDbContext).Assembly.GetName().Name;
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
@@ -43,17 +47,53 @@ namespace Api.Extensions.Identity
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = context => context.UseSqlServer(connectionString,
-                        sql => sql.MigrationsAssembly(migrationAssembly));
+                        sql => sql.MigrationsAssembly(configurationMigrationAssembly));
                 })
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = context => context.UseSqlServer(connectionString,
-                        sql => sql.MigrationsAssembly(migrationAssembly));
+                        sql => sql.MigrationsAssembly(configurationMigrationAssembly));
                 });
-
-            var servicesProvider = services.BuildServiceProvider();
             
             return services;
+        }
+
+        public static void SeedIdentityConfiguration(this IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            context.Database.Migrate();
+
+            if (!context.Clients.Any())
+            {
+                foreach (var client in Configuration.Clients)
+                {
+                    var modifiedClient = new Client()
+                    {
+                        ClientId = client.ClientId,
+                        ClientName = client.ClientName,
+                    };
+                    context.Clients.Add(modifiedClient);
+
+                }
+                context.SaveChanges();
+            }
+
+            //if (!context.IdentityResources.Any())
+            //{ 
+            //    foreach (var resource in Configuration.IdentityResources)
+            //        context.IdentityResources.Add(resource.ToEntity());
+            //    context.SaveChanges();
+            //}
+
+            //if (!context.ApiScopes.Any())
+            //{
+            //    foreach (var resource in Configuration.ApiScopes)
+            //        context.ApiScopes.Add(resource.ToEntity());
+            //    context.SaveChanges();
+            //}
         }
     }
 }
