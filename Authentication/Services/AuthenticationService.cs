@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Models.Constants.Email;
 using Models.Constants.Error;
 using Models.DTOs.Requests;
 using Models.Entities.Identity;
 using Models.Interfaces.Services;
-using NETCore.MailKit.Core;
 
 namespace Services
 {
@@ -19,17 +16,17 @@ namespace Services
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly HttpRequest _request;
-        private readonly IUrlHelper _urlHelper;
-        private readonly IEmailService _emailService;
+        //private readonly IUrlHelper _urlHelper;
+        //private readonly IEmailService _emailService;
 
         public AuthenticationService(
             UserManager<User> userManager,
             ILogger<AuthenticationService> logger,
             IMapper mapper,
             IPasswordHasher<User> passwordHasher,
-            IHttpContextAccessor httpContextAccessor,
-            IUrlHelper urlHelper,
-            IEmailService emailService
+            IHttpContextAccessor httpContextAccessor
+            //IUrlHelper urlHelper,
+            //IEmailService emailService
             )
         {
             _userManager = userManager;
@@ -37,8 +34,8 @@ namespace Services
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _request = httpContextAccessor.HttpContext.Request;
-            _urlHelper = urlHelper;
-            _emailService = emailService;
+            //_urlHelper = urlHelper;
+            //_emailService = emailService;
         }
 
         public async Task<IdentityResult> RegisterAsync(UserRegistrationRequestDTO request)
@@ -54,7 +51,7 @@ namespace Services
                         Description = ErrorMessages.USER_ALREADY_EXISTS
                     };
 
-                    return IdentityResult.Failed(error);
+                    return IdentityResult.Failed(error); 
                 }
 
                 User newUser = _mapper.Map<UserRegistrationRequestDTO, User>(request);
@@ -70,11 +67,11 @@ namespace Services
 
                 string callbackUrl = $"{_request.Scheme}://{_request.Host}/api/Authentication/verify?version=1.0/email={user.Email}&token={token}";
                 
-                await _emailService.SendAsync(
-                    newUser.Email, 
-                    Subjects.EMAIL_VERIFICATION, 
-                    EmailMessages.Verification(callbackUrl),
-                    true);
+                //await _emailService.SendAsync(
+                //    newUser.Email, 
+                //    Subjects.EMAIL_VERIFICATION, 
+                //    EmailMessages.Verification(callbackUrl),
+                //    true);
 
                 return IdentityResult.Success;
             }

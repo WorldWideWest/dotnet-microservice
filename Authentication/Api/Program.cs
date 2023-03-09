@@ -20,6 +20,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseRateLimiter();
+//app.UseRateLimiter();
 
 app.Run();

@@ -2,7 +2,7 @@
 
 namespace Api.Extensions.Identity
 {
-    public class Config
+    public class Configuration
     {
         public static IEnumerable<IdentityResource> IdentityResources =>
             new List<IdentityResource>
