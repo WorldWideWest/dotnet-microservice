@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Database.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class InitializingIdentityUser : Migration
+    public partial class InitilaMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -38,7 +38,7 @@ namespace Api.Extensions
 
             ApiVersioningExtension.AddApiVersioningServices(services);
             RateLimitterExtension.AddRateLimiterServices(services);
-            IdentityExtension.AddIdentityServices(services, connectionString, migrationAssembly);
+            IdentityExtension.AddIdentityServices(services, connectionString);
             AutoMapperExtension.AddAutoMapperServices(services);
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

@@ -13,13 +13,18 @@ var app = builder.Build();
 if(builder.Environment.IsDevelopment())
     app.UseSwaggerConfiguration();
 
-IdentityExtension.SeedIdentityConfiguration(app);
+//IdentityExtension.SeedIdentityConfiguration(app);
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+IdentityExtension.EnsureSeedData(app);
+
+// app.UseIdentityServer();            
+
 
 app.MapControllers();
 
